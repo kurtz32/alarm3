@@ -1,0 +1,21 @@
+{
+    "name": "Offline Alarm Clock PWA",
+    "short_name": "Alarm Clock",
+    "description": "An offline-first Progressive Web App alarm clock with audio recording",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#121212",
+    "theme_color": "#bb86fc",
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
