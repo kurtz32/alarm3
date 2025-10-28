@@ -113,11 +113,23 @@ function displayAlarms() {
 
         const playBtn = document.createElement('button');
         playBtn.textContent = 'Play';
-        playBtn.onclick = () => playAlarm(alarm.audioBlob);
+        playBtn.setAttribute('data-alarm-id', alarm.id);
+        ['click', 'touchstart'].forEach(eventType => {
+            playBtn.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                playAlarm(alarm.audioBlob);
+            });
+        });
 
         const cancelBtn = document.createElement('button');
         cancelBtn.textContent = 'Cancel';
-        cancelBtn.onclick = () => removeAlarm(alarm.id);
+        cancelBtn.setAttribute('data-alarm-id', alarm.id);
+        ['click', 'touchstart'].forEach(eventType => {
+            cancelBtn.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                removeAlarm(alarm.id);
+            });
+        });
 
         controlsDiv.appendChild(playBtn);
         controlsDiv.appendChild(cancelBtn);
@@ -129,19 +141,37 @@ function displayAlarms() {
     });
 }
 
-// Event listeners
-document.getElementById('record-btn').addEventListener('click', startRecording);
-document.getElementById('stop-btn').addEventListener('click', stopRecording);
+// Event listeners - support both click and touch for mobile
+function addEventListeners() {
+    const recordBtn = document.getElementById('record-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const alarmForm = document.getElementById('alarm-form');
 
-document.getElementById('alarm-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const timeInput = document.getElementById('alarm-time');
-    const time = timeInput.value;
-    if (time && currentAudioBlob) {
-        addAlarm(time, currentAudioBlob);
-        timeInput.value = '';
-        currentAudioBlob = null;
-    } else {
-        alert('Please record audio and set a time.');
-    }
-});
+    // Add both click and touch events for mobile compatibility
+    ['click', 'touchstart'].forEach(eventType => {
+        recordBtn.addEventListener(eventType, (e) => {
+            e.preventDefault();
+            startRecording();
+        });
+        stopBtn.addEventListener(eventType, (e) => {
+            e.preventDefault();
+            stopRecording();
+        });
+    });
+
+    alarmForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const timeInput = document.getElementById('alarm-time');
+        const time = timeInput.value;
+        if (time && currentAudioBlob) {
+            addAlarm(time, currentAudioBlob);
+            timeInput.value = '';
+            currentAudioBlob = null;
+        } else {
+            alert('Please record audio and set a time.');
+        }
+    });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', addEventListeners);
