@@ -1,11 +1,11 @@
 :root {
-    --bg-color: #121212;
-    --text-color: #ffffff;
-    --accent-color: #bb86fc;
-    --button-bg: #3700b3;
-    --button-hover: #6200ea;
-    --input-bg: #1e1e1e;
-    --border-color: #333333;
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --accent-color: #007bff;
+    --button-bg: #007bff;
+    --button-hover: #0056b3;
+    --input-bg: #f8f9fa;
+    --border-color: #dee2e6;
 }
 
 * {
@@ -23,6 +23,11 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    touch-action: manipulation; /* Prevent double-tap zoom on buttons */
+}
+
+body.offline {
+    opacity: 1; /* Ensure full visibility offline */
 }
 
 main {

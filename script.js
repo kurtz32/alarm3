@@ -3,6 +3,7 @@ let alarms = [];
 let mediaRecorder;
 let recordedChunks = [];
 let currentAudioBlob = null;
+let timeInterval; // Store interval reference
 
 // Update current time display
 function updateTime() {
@@ -14,8 +15,39 @@ function updateTime() {
 }
 
 // Start updating time
-setInterval(updateTime, 1000);
+timeInterval = setInterval(updateTime, 1000);
 updateTime(); // Initial call
+
+// Check if we're online and handle offline state
+function handleOnlineStatus() {
+    const isOnline = navigator.onLine;
+    console.log('Online status:', isOnline);
+
+    // Update UI based on online status
+    document.body.classList.toggle('offline', !isOnline);
+
+    if (!isOnline) {
+        // Ensure time keeps updating even offline
+        console.log('App is offline - time updates should continue');
+        // Force a time update to ensure it's working
+        updateTime();
+    }
+}
+
+// Listen for online/offline events
+window.addEventListener('online', handleOnlineStatus);
+window.addEventListener('offline', handleOnlineStatus);
+
+// Handle visibility change (when app comes back from background)
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        console.log('App became visible, updating time');
+        updateTime(); // Update time immediately when app becomes visible
+    }
+});
+
+// Initial check
+handleOnlineStatus();
 
 // Audio recording functions
 async function startRecording() {
@@ -98,7 +130,13 @@ function removeAlarm(alarmId) {
 
 function displayAlarms() {
     const alarmList = document.getElementById('alarm-list');
+    if (!alarmList) {
+        console.error('Alarm list element not found');
+        return;
+    }
+
     alarmList.innerHTML = '';
+    console.log('Displaying', alarms.length, 'alarms');
 
     alarms.forEach(alarm => {
         const alarmItem = document.createElement('div');
@@ -117,8 +155,10 @@ function displayAlarms() {
         ['click', 'touchstart'].forEach(eventType => {
             playBtn.addEventListener(eventType, (e) => {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Play button pressed for alarm', alarm.id);
                 playAlarm(alarm.audioBlob);
-            });
+            }, { passive: false });
         });
 
         const cancelBtn = document.createElement('button');
@@ -127,8 +167,10 @@ function displayAlarms() {
         ['click', 'touchstart'].forEach(eventType => {
             cancelBtn.addEventListener(eventType, (e) => {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Cancel button pressed for alarm', alarm.id);
                 removeAlarm(alarm.id);
-            });
+            }, { passive: false });
         });
 
         controlsDiv.appendChild(playBtn);
@@ -147,31 +189,48 @@ function addEventListeners() {
     const stopBtn = document.getElementById('stop-btn');
     const alarmForm = document.getElementById('alarm-form');
 
+    if (!recordBtn || !stopBtn || !alarmForm) {
+        console.error('Required elements not found');
+        return;
+    }
+
     // Add both click and touch events for mobile compatibility
     ['click', 'touchstart'].forEach(eventType => {
         recordBtn.addEventListener(eventType, (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Record button pressed');
             startRecording();
-        });
+        }, { passive: false });
+
         stopBtn.addEventListener(eventType, (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Stop button pressed');
             stopRecording();
-        });
+        }, { passive: false });
     });
 
     alarmForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        console.log('Form submitted');
         const timeInput = document.getElementById('alarm-time');
         const time = timeInput.value;
         if (time && currentAudioBlob) {
             addAlarm(time, currentAudioBlob);
             timeInput.value = '';
             currentAudioBlob = null;
+            console.log('Alarm added successfully');
         } else {
             alert('Please record audio and set a time.');
         }
     });
+
+    console.log('Event listeners added successfully');
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', addEventListeners);
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing app');
+    addEventListeners();
+});

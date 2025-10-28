@@ -4,8 +4,8 @@
     "description": "An offline-first Progressive Web App alarm clock with audio recording",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#121212",
-    "theme_color": "#bb86fc",
+    "background_color": "#ffffff",
+    "theme_color": "#007bff",
     "icons": [
         {
             "src": "icon-192.svg",
