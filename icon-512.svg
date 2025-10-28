@@ -1,0 +1,8 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#bb86fc"/>
+  <circle cx="256" cy="256" r="200" fill="#121212" stroke="#ffffff" stroke-width="10"/>
+  <line x1="256" y1="256" x2="256" y2="140" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="320" y2="256" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="20" fill="#ffffff"/>
+  <text x="256" y="360" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="60" font-weight="bold">⏰</text>
+</svg>
